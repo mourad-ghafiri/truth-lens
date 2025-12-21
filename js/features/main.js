@@ -36,6 +36,9 @@ async function init() {
     // Listen for tab changes
     chrome.tabs.onActivated.addListener(handleTabChange);
 
+    // Listen for URL changes/navigation within same tab
+    chrome.tabs.onUpdated.addListener(handleTabUpdate);
+
     // Listen for messages from background
     chrome.runtime.onMessage.addListener(handleMessage);
 
@@ -121,11 +124,33 @@ async function trackCurrentTab() {
     }
 }
 
-// Handle tab change
+// Handle tab change (switching tabs)
 async function handleTabChange(activeInfo) {
     const { tabId } = activeInfo;
     state.setCurrentTabId(tabId);
     await restoreTabState(tabId);
+}
+
+// Handle tab update (navigation/URL change)
+async function handleTabUpdate(tabId, changeInfo, tab) {
+    // Only react if URL changed or page reloaded (status=loading)
+    // We wait for 'complete' or check if URL definitely changed to avoid intermediate states
+    if (changeInfo.status === 'loading' && changeInfo.url) {
+        console.log('[Truth Lens] Tab updated (URL change):', tabId, changeInfo.url);
+
+        // If it's the currently active tab in logic, update it
+        if (tabId === state.currentTabId) {
+            // Reset state for this tab since it's a new page
+            state.setTabIdle(tabId);
+            state.clearSelectionState();
+
+            // Trigger restore (which will check for cached result for the NEW url)
+            await restoreTabState(tabId);
+        } else {
+            // Just reset the background tab state
+            state.setTabIdle(tabId);
+        }
+    }
 }
 
 // Restore UI state for a tab
@@ -141,8 +166,15 @@ async function restoreTabState(tabId) {
         DOM.closeSelectionBtn?.classList.add('hidden');
         DOM.closeButtonRow?.classList.add('hidden');
 
+        // FORCE RESET UI FIRST to avoid stale state lingering
+        DOM.checkPageBtn?.classList.remove('hidden');
+        DOM.resultContainer?.classList.add('hidden');
+        progress.hideProgress();
+        DOM.reportInfo?.classList.add('hidden');
+
         if (!tabState || tabState.status === 'idle') {
             // Check if we have a saved result for this URL
+            // ... (rest of function logic)
             const tab = await chrome.tabs.get(tabId);
             console.log('[Truth Lens] checking auto-restore for URL:', tab.url);
 
@@ -159,11 +191,8 @@ async function restoreTabState(tabId) {
                 return restoreTabState(tabId);
             }
 
-            // Show idle state
-            DOM.checkPageBtn?.classList.remove('hidden');
-            DOM.resultContainer?.classList.add('hidden');
-            progress.hideProgress();
-            DOM.reportInfo?.classList.add('hidden');
+            // Show idle state (already reset above)
+            console.log('[Truth Lens] No cached result found, staying in idle state');
         } else if (tabState.status === 'progress') {
             // Show progress state
             DOM.checkPageBtn?.classList.add('hidden');
