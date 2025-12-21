@@ -3,7 +3,7 @@
  * Handles displaying fact-check results
  */
 
-import { DOM } from './dom.js';
+import { DOM } from '../core/dom.js';
 import * as i18n from '../i18n/i18n.js';
 import { parseMarkdown } from '../utils.js';
 

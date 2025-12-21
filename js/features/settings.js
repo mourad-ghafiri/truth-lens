@@ -3,9 +3,9 @@
  * Handles settings form and persistence
  */
 
-import { DOM } from './dom.js';
+import { DOM } from '../core/dom.js';
 import * as i18n from '../i18n/i18n.js';
-import { clearCache } from './storage.js';
+import { clearCache } from '../core/storage.js';
 
 const SETTINGS_KEY = 'truthLensSettings';
 

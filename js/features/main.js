@@ -3,8 +3,8 @@
  * Initializes all modules and sets up event listeners
  */
 
-import { DOM } from './dom.js';
-import * as state from './state.js';
+import { DOM } from '../core/dom.js';
+import * as state from '../core/state.js';
 import { initTabs, switchTab } from './tabs.js';
 import { initHistory } from './history.js';
 import { initSettings, loadSettings, applyTranslations } from './settings.js';

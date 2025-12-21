@@ -3,8 +3,8 @@
  * Handles progress indicators and timer during fact-checking
  */
 
-import { DOM } from './dom.js';
-import * as state from './state.js';
+import { DOM } from '../core/dom.js';
+import * as state from '../core/state.js';
 
 // Start the timer
 export function startTimer() {

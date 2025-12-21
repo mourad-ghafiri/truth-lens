@@ -3,8 +3,8 @@
  * Handles history list and detail views (stays in History tab)
  */
 
-import { DOM } from './dom.js';
-import * as storage from './storage.js';
+import { DOM } from '../core/dom.js';
+import * as storage from '../core/storage.js';
 import { displayHistoryResult, getScoreColor } from './result.js';
 
 // Show history list view, hide detail view

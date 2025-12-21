@@ -3,9 +3,9 @@
  * Handles text selection fact-checking (via context menu)
  */
 
-import { DOM } from './dom.js';
-import * as state from './state.js';
-import * as storage from './storage.js';
+import { DOM } from '../core/dom.js';
+import * as state from '../core/state.js';
+import * as storage from '../core/storage.js';
 import * as progress from './progress.js';
 import { displayResult, showError } from './result.js';
 import { renderHistoryList } from './history.js';

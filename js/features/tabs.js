@@ -3,7 +3,7 @@
  * Handles tab switching and related UI updates
  */
 
-import { DOM } from './dom.js';
+import { DOM } from '../core/dom.js';
 
 // Switch to a specific tab
 export function switchTab(tabId) {
