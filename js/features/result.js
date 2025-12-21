@@ -205,7 +205,7 @@ function renderClaim(claim, direction) {
     const details = getVerdictDetails(claim.verdict);
 
     return `
-        <div class="claim-item" dir="${direction}">
+        <div class="claim-item style-${details.class}" dir="${direction}">
             <div class="claim-badge ${details.class}">
                 <span class="claim-icon">${details.icon}</span>
                 <span class="claim-verdict-text">${verdictText}</span>
