@@ -40,8 +40,6 @@
         "<all_urls>"
       ],
       "js": [
-        "js/content/page.js",
-        "js/content/transcription.js",
         "js/content/content.js"
       ]
     }

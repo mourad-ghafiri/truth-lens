@@ -174,28 +174,36 @@ async function handleCachedResult(cached, content, isYouTube, factCheckTabId, up
 async function extractContent(isYouTube) {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-    if (isYouTube) {
-        const results = await chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            func: () => window.__ytTranscript || null
-        });
+    // Helper: Send message with retry using injection
+    const attemptExtraction = async () => {
+        try {
+            return await chrome.tabs.sendMessage(tab.id, { action: "getPageContent" });
+        } catch (e) {
+            console.log('[Truth Lens] Message failed, injecting script and retrying...', e);
 
-        let transcript = results?.[0]?.result;
-        if (!transcript) {
-            // Try to extract from page
-            const extractResults = await chrome.scripting.executeScript({
+            // Inject content script if not ready
+            await chrome.scripting.executeScript({
                 target: { tabId: tab.id },
                 files: ['js/content/content.js']
             });
-            transcript = extractResults?.[0]?.result;
+
+            // Wait a moment for script to initialize listener
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            // Retry message
+            return await chrome.tabs.sendMessage(tab.id, { action: "getPageContent" });
         }
-        return transcript || '[Transcript not available]';
-    } else {
-        const results = await chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            func: () => document.body.innerText
-        });
-        return results?.[0]?.result || '';
+    };
+
+    try {
+        const response = await attemptExtraction();
+        if (response && response.content) {
+            return response.content;
+        }
+        throw new Error("Empty response from content script");
+    } catch (error) {
+        console.error('[Truth Lens] Extraction failed:', error);
+        return isYouTube ? '[Error extracting YouTube transcript]' : '[Error extracting page content]';
     }
 }
 

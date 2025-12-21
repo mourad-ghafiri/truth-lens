@@ -11,7 +11,7 @@ export const en = {
     btnSaveSettings: 'Save Settings',
     progressTitle: 'Fact-Checking in Progress',
     stepExtract: 'Extracting Content',
-    stepExtractDesc: 'Fetching page content...',
+    stepExtractDesc: 'Fetching content...',
     stepExtractYT: 'Getting Transcription',
     stepExtractYTDesc: 'Fetching video transcript...',
     stepPrompt: 'Preparing Analysis',
