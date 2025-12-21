@@ -202,23 +202,39 @@ function buildReportHTML(report, direction, textAlign, dirAttr) {
 function renderClaim(claim, direction) {
     const verdictKey = `verdict_${claim.verdict?.toUpperCase().replace(/\s+/g, '_')}`;
     const verdictText = i18n.getTranslation(verdictKey) || claim.verdict || 'Unknown';
-    const verdictClass = getVerdictClass(claim.verdict);
+    const details = getVerdictDetails(claim.verdict);
 
     return `
         <div class="claim-item" dir="${direction}">
-            <span class="claim-verdict ${verdictClass}">${verdictText}</span>
+            <div class="claim-badge ${details.class}">
+                <span class="claim-icon">${details.icon}</span>
+                <span class="claim-verdict-text">${verdictText}</span>
+            </div>
             <span class="claim-text">${parseMarkdown(claim.claim || '')}</span>
         </div>
     `;
 }
 
-// Get CSS class for verdict
-function getVerdictClass(verdict) {
-    if (!verdict) return '';
-    const v = verdict.toUpperCase();
-    if (['VERIFIED', 'TRUE', 'MOSTLY_TRUE'].includes(v)) return 'verdict-high';
-    if (['MIXED', 'MISLEADING'].includes(v)) return 'verdict-mixed';
-    return 'verdict-low';
+// Get details (class and icon) for verdict
+function getVerdictDetails(verdict) {
+    if (!verdict) return { class: 'verdict-neutral', icon: '❓' };
+
+    const v = verdict.toUpperCase().replace(/\s+/g, '_');
+
+    const map = {
+        'TRUE': { class: 'verdict-true', icon: '✅' },
+        'VERIFIED': { class: 'verdict-true', icon: '✅' },
+        'MOSTLY_TRUE': { class: 'verdict-mostly-true', icon: '☑️' },
+        'MIXED': { class: 'verdict-mixed', icon: '⚖️' },
+        'MISLEADING': { class: 'verdict-misleading', icon: '⚠️' },
+        'FALSE': { class: 'verdict-false', icon: '❌' },
+        'FAKE': { class: 'verdict-false', icon: '❌' },
+        'SATIRE': { class: 'verdict-satire', icon: '🎭' },
+        'UNVERIFIABLE': { class: 'verdict-unverifiable', icon: '❓' },
+        'OPINION': { class: 'verdict-opinion', icon: '💭' }
+    };
+
+    return map[v] || { class: 'verdict-neutral', icon: 'ℹ️' };
 }
 
 // Show error in result container

@@ -217,12 +217,77 @@
 }
 
 .claim-verdict {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 2px 8px;
+    display: none;
+    /* Deprecated */
+}
+
+.claim-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
     border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
     white-space: nowrap;
+    height: fit-content;
     flex-shrink: 0;
+}
+
+.claim-badge .claim-icon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+/* Specific Verdict Colors */
+.verdict-true {
+    background: rgba(34, 197, 94, 0.15);
+    color: #15803d;
+    /* Darker green for text */
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.verdict-mostly-true {
+    background: rgba(132, 204, 22, 0.15);
+    color: #4d7c0f;
+    border: 1px solid rgba(132, 204, 22, 0.3);
+}
+
+.verdict-mixed {
+    background: rgba(245, 158, 11, 0.15);
+    color: #b45309;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.verdict-misleading {
+    background: rgba(234, 88, 12, 0.15);
+    color: #c2410c;
+    border: 1px solid rgba(234, 88, 12, 0.3);
+}
+
+.verdict-false {
+    background: rgba(239, 68, 68, 0.15);
+    color: #b91c1c;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.verdict-satire {
+    background: rgba(168, 85, 247, 0.15);
+    color: #7e22ce;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.verdict-unverifiable,
+.verdict-neutral {
+    background: rgba(107, 114, 128, 0.15);
+    color: #374151;
+    border: 1px solid rgba(107, 114, 128, 0.3);
+}
+
+.verdict-opinion {
+    background: rgba(59, 130, 246, 0.15);
+    color: #1d4ed8;
+    border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .claim-text {
