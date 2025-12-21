@@ -126,3 +126,61 @@ export async function clearHistory() {
         console.error('[Truth Lens] History clear error:', e);
     }
 }
+
+// URL-based Result Persistence
+const URL_CACHE_KEY = 'fc_url_cache';
+
+export async function saveUrlResult(url, result) {
+    try {
+        const storage = await chrome.storage.local.get(URL_CACHE_KEY);
+        const urlCache = storage[URL_CACHE_KEY] || {};
+
+        // Normalize URL (remove query params except for v= on YouTube)
+        const normalizedUrl = normalizeUrl(url);
+        if (!normalizedUrl) return;
+
+        urlCache[normalizedUrl] = {
+            ...result,
+            timestamp: Date.now()
+        };
+
+        await chrome.storage.local.set({ [URL_CACHE_KEY]: urlCache });
+    } catch (e) {
+        console.error('[Truth Lens] URL cache save error:', e);
+    }
+}
+
+export async function getUrlResult(url) {
+    try {
+        const storage = await chrome.storage.local.get(URL_CACHE_KEY);
+        const urlCache = storage[URL_CACHE_KEY] || {};
+
+        const normalizedUrl = normalizeUrl(url);
+        if (!normalizedUrl) return null;
+
+        const cached = urlCache[normalizedUrl];
+        // Expire after 24 hours
+        if (cached && (Date.now() - cached.timestamp < 24 * 60 * 60 * 1000)) {
+            return cached;
+        }
+        return null;
+    } catch (e) {
+        console.error('[Truth Lens] URL cache get error:', e);
+        return null;
+    }
+}
+
+function normalizeUrl(url) {
+    try {
+        const urlObj = new URL(url);
+        // Special handling for YouTube
+        if (urlObj.hostname.includes('youtube.com') || urlObj.hostname.includes('youtu.be')) {
+            const v = urlObj.searchParams.get('v');
+            if (v) return `https://www.youtube.com/watch?v=${v}`;
+        }
+        // For others, strip query params and hash
+        return `${urlObj.origin}${urlObj.pathname}`;
+    } catch (e) {
+        return null;
+    }
+}

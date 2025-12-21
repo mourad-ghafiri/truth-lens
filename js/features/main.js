@@ -5,6 +5,7 @@
 
 import { DOM } from '../core/dom.js';
 import * as state from '../core/state.js';
+import * as storage from '../core/storage.js';
 import { initTabs, switchTab } from './tabs.js';
 import { initHistory } from './history.js';
 import { initSettings, loadSettings, applyTranslations } from './settings.js';
@@ -141,6 +142,20 @@ async function restoreTabState(tabId) {
         DOM.closeButtonRow?.classList.add('hidden');
 
         if (!tabState || tabState.status === 'idle') {
+            // Check if we have a saved result for this URL
+            const tab = await chrome.tabs.get(tabId);
+            const savedResult = await storage.getUrlResult(tab.url);
+
+            if (savedResult) {
+                console.log('[Truth Lens] Restoring result from URL cache');
+                // Auto-restore the result
+                state.setTabResult(tabId, savedResult.score, savedResult.report, savedResult.content, savedResult.prompt, savedResult.isYouTube);
+
+                // Recursively call restore to update UI
+                state.setIsRestoringState(false); // Reset lock temporarily
+                return restoreTabState(tabId);
+            }
+
             // Show idle state
             DOM.checkPageBtn?.classList.remove('hidden');
             DOM.resultContainer?.classList.add('hidden');

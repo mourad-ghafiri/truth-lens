@@ -51,7 +51,7 @@ SCORING CRITERIA (apply consistently):
 
 
 IMPORTANT:
-- Respond in ${langName} (Native Name: ${langName})
+- Respond in ${language} (Native Name: ${language})
 - Do NOT inject personal opinions or political viewpoints
 - Do NOT assume bad faith without evidence
 - If content is clearly satire or parody, identify it as such

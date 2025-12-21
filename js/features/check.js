@@ -6,6 +6,7 @@
 import { DOM } from '../core/dom.js';
 import * as state from '../core/state.js';
 import * as storage from '../core/storage.js';
+import { saveUrlResult } from '../core/storage.js';
 import * as progress from './progress.js';
 import { displayResult, showError } from './result.js';
 import { renderHistoryList } from './history.js';
@@ -112,6 +113,18 @@ export async function handleCheckWithProgress(isYouTube, forceRefresh = false) {
         // Save to cache
         const source = isYouTube ? 'YouTube Video' : 'Current Page';
         await storage.saveToCache(cacheKey, { ...analysisResult, source, timestamp: Date.now() });
+
+        // Save URL mapping for auto-restore
+        if (tabUrl) {
+            await saveUrlResult(tabUrl, {
+                score: analysisResult.score,
+                report: analysisResult,
+                content: content,
+                prompt: prompt,
+                isYouTube: isYouTube,
+                source: source
+            });
+        }
 
         // Save tab state
         state.setTabResult(factCheckTabId, analysisResult.score, analysisResult, content, prompt, isYouTube);
