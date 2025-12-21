@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truth Lens</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <img src="icons/icon48.png" alt="Logo">
+                <h1>Truth Lens</h1>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="check" data-i18n="tabCheck">Check</button>
+            <button class="tab-btn" data-tab="history" data-i18n="tabHistory">History</button>
+            <button class="tab-btn" data-tab="settings" data-i18n="tabSettings">Settings</button>
+        </nav>
+
+        <main>
+            <!-- Check Tab -->
+            <section id="check" class="tab-content active">
+                <div class="actions">
+                    <button id="check-page-btn" class="primary-btn">
+                        <span class="icon">✓</span> <span data-i18n="btnCheckPage">Fact Check</span>
+                    </button>
+                </div>
+
+                <!-- Progress Steps Container -->
+                <div id="progress-container" class="progress-container hidden">
+                    <div class="progress-header">
+                        <span class="progress-title" data-i18n="progressTitle">Fact-Checking in Progress</span>
+                        <span id="progress-timer" class="progress-timer">0s</span>
+                    </div>
+
+                    <!-- Step 1: Content Extraction -->
+                    <div class="progress-step" id="step-extract">
+                        <div class="step-icon pending">
+                            <span class="icon-content">1</span>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title" data-i18n="stepExtract">Extracting Content</div>
+                            <div class="step-description" data-i18n="stepExtractDesc">Fetching page content and
+                                transcript...</div>
+                        </div>
+                    </div>
+
+                    <!-- Expandable: Content Preview -->
+                    <div class="expandable-section hidden" id="content-preview-section">
+                        <button class="expandable-header" data-target="content-preview-body">
+                            <span data-i18n="previewContent">📝 View Extracted Content</span>
+                            <span class="expand-icon">▶</span>
+                        </button>
+                        <div class="expandable-body hidden" id="content-preview-body">
+                            <pre id="content-preview-text"></pre>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Preparing Prompt -->
+                    <div class="progress-step" id="step-prompt">
+                        <div class="step-icon pending">
+                            <span class="icon-content">2</span>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title" data-i18n="stepPrompt">Preparing Analysis</div>
+                            <div class="step-description" data-i18n="stepPromptDesc">Building fact-check prompt...</div>
+                        </div>
+                    </div>
+
+                    <!-- Expandable: Prompt Preview -->
+                    <div class="expandable-section hidden" id="prompt-preview-section">
+                        <button class="expandable-header" data-target="prompt-preview-body">
+                            <span data-i18n="previewPrompt">🤖 View AI Prompt</span>
+                            <span class="expand-icon">▶</span>
+                        </button>
+                        <div class="expandable-body hidden" id="prompt-preview-body">
+                            <pre id="prompt-preview-text"></pre>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: AI Analysis -->
+                    <div class="progress-step" id="step-analyze">
+                        <div class="step-icon pending">
+                            <span class="icon-content">3</span>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title" data-i18n="stepAnalyze">AI Analysis</div>
+                            <div class="step-description" data-i18n="stepAnalyzeDesc">Verifying facts and checking
+                                sources...</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Complete -->
+                    <div class="progress-step" id="step-complete">
+                        <div class="step-icon pending">
+                            <span class="icon-content">4</span>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-title" data-i18n="stepComplete">Complete</div>
+                            <div class="step-description" data-i18n="stepCompleteDesc">Generating report...</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Result Container -->
+                <div id="result-container" class="result-container hidden">
+                    <div class="score-card">
+                        <div class="score-circle-container">
+                            <svg class="score-circle" viewBox="0 0 36 36">
+                                <path class="circle-bg"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path class="circle" stroke-dasharray="0, 100"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            </svg>
+                            <span id="score-text">--%</span>
+                        </div>
+                        <h2 id="verdict-title">Analysis Result</h2>
+                        <p id="verdict-subtitle" class="verdict-subtitle"></p>
+                    </div>
+
+                    <!-- Report Sections -->
+                    <div id="report-sections" class="report-sections">
+                        <!-- Dynamic report content will be inserted here -->
+                    </div>
+
+                    <!-- View Details Expandables (after result) -->
+
+
+                    <!-- Action Buttons -->
+                    <div class="result-actions">
+                        <button id="new-check-btn" class="primary-btn">
+                            <span class="icon">🔄</span> <span data-i18n="btnRecheck">Recheck</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Tab -->
+            <section id="history" class="tab-content">
+                <div class="history-actions">
+                    <button id="clear-history-btn" class="secondary-btn" data-i18n="btnClearHistory">Clear
+                        History</button>
+                </div>
+                <div class="history-list" id="history-list">
+                    <p class="placeholder-text" data-i18n="historyEmpty">No checks yet.</p>
+                </div>
+            </section>
+
+            <!-- Settings Tab -->
+            <section id="settings" class="tab-content">
+                <form id="settings-form">
+                    <div class="form-group">
+                        <label for="provider-url" data-i18n="lblProviderUrl">LLM Provider URL</label>
+                        <input type="url" id="provider-url" placeholder="https://api.openai.com/v1"
+                            value="https://api.openai.com/v1">
+                        <small data-i18n="compatibleWith">Compatible with OpenAI interface</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="report-language" data-i18n="lblLanguage">Report Language</label>
+                        <select id="report-language">
+                            <option value="en">English</option>
+                            <option value="ar">العربية</option>
+                            <option value="zh">简体中文</option>
+                            <option value="ru">Русский</option>
+                            <option value="fr">Français</option>
+                            <option value="it">Italiano</option>
+                            <option value="es">Español</option>
+                            <option value="de">Deutsch</option>
+                            <option value="pt">Português</option>
+                            <option value="ja">日本語</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="model-name" data-i18n="lblModelName">Model Name</label>
+                        <input type="text" id="model-name" placeholder="gpt-4o" value="gpt-4o">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="api-key" data-i18n="lblApiKey">API Key</label>
+                        <input type="password" id="api-key" placeholder="sk-...">
+                    </div>
+
+
+
+                    <button type="submit" class="save-btn" data-i18n="btnSaveSettings">Save Settings</button>
+                    <p id="settings-status" class="status-text"></p>
+                </form>
+            </section>
+        </main>
+    </div>
+    <script src="sidepanel.js" type="module"></script>
+</body>
+
+</html>
