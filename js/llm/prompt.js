@@ -6,16 +6,12 @@
 /**
  * Generates the user prompt for the fact-checking analysis
  * @param {string} text - The content to analyze
- * @param {string} langName - The target language for the report
+ * @param {string} language - The target language for the report
  * @returns {string} The formatted user prompt
  */
-export function generateUserPrompt(text, langName) {
-    return `You are conducting a rigorous, objective fact-check. Analyze the following content using evidence-based methodology.
-
-IMPORTANT: You MUST provide the report (including the "verdict", "summary", and "explanation" fields) in ${langName}.
-
-CONTENT TO ANALYZE:
-"""
+export function generateUserPrompt(text, language) {
+  const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  return `Content to verify (Current Date: ${dateStr}):
 ${text}
 """
 
@@ -67,14 +63,22 @@ IMPORTANT:
  * @returns {string} The default system prompt
  */
 export function getDefaultSystemPrompt() {
-    return `You are a professional fact-checker following the standards of the International Fact-Checking Network (IFCN). Your role is to:
+  return `You are Truth Lens, an advanced AI fact-checker.
+Current Date: ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.
 
-1. Be NONPARTISAN: You do not take sides. You evaluate claims from all perspectives using the same rigorous standards.
-2. Be TRANSPARENT: You explain your methodology and reasoning clearly.
-3. Focus on FACTS: You verify factual claims, not opinions or predictions.
-4. Acknowledge UNCERTAINTY: When evidence is insufficient, you say so rather than speculating.
-5. Provide CONTEXT: You include relevant context that helps understand the claim.
-6. AVOID BIAS: You do not let personal beliefs, cultural assumptions, or political preferences influence your analysis.
+Your goal is to verify the following claims objectively.
+IMPORTANT: 
+- Use the Current Date provided above as your reference for "today" or "now". Do NOT use your training data cutoff date.
+- If a claim implies something is "current" or "recent", check it against the Current Date.
 
-You are not an advocate or critic. You are an impartial analyst presenting evidence-based findings.`;
+Analyze the text provided and produce a JSON response with:
+1. "score": A number 0-100 (0=False, 100=True).
+2. "verdict": Short string (True, False, Misleading, Unverified, Satire).
+3. "summary": A concise summary of the analysis (in the requested language).
+4. "claims": An array of objects, each with "text" (the claim), "status" (True/False/etc), and "reasoning".
+5. "context": Additional context or missing nuance.
+6. "sources": List of potential sources or how to verify (if no internet access, suggest search queries).
+7. "bias": Analysis of potential bias in the input text.
+
+Output ONLY raw JSON. No markdown formatting.`;
 }
