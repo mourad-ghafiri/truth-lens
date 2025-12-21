@@ -24,7 +24,10 @@ async function init() {
 
     // Initialize modules
     initTabs();
-    initHistory();
+    initHistory({
+        onDelete: (url) => handleHistoryDeletion(url),
+        onClear: () => handleHistoryClear()
+    });
     initSettings();
 
     // Setup event listeners
@@ -243,6 +246,38 @@ function handleMessage(message, sender, sendResponse) {
     if (message.action === 'checkSelection' && message.text) {
         switchTab('check');
         handleSelectionCheck(message.text);
+    }
+}
+
+// Handle single history item deletion
+async function handleHistoryDeletion(deletedUrl) {
+    const tabs = await chrome.tabs.query({});
+    for (const tab of tabs) {
+        // Simple URL match - could be improved with normalization if storage.normalizeUrl was exported
+        // But exact match should catch most cases
+        if (tab.url === deletedUrl || tab.url?.includes(deletedUrl)) {
+            resetTabStateIfActive(tab.id);
+        }
+    }
+}
+
+// Handle full history clear
+async function handleHistoryClear() {
+    const tabs = await chrome.tabs.query({});
+    for (const tab of tabs) {
+        resetTabStateIfActive(tab.id);
+    }
+}
+
+// Helper to reset tab state and UI
+async function resetTabStateIfActive(tabId) {
+    const tabState = state.getTabState(tabId);
+    if (tabState && tabState.status === 'result') {
+        state.setTabIdle(tabId);
+        // If this is the current active tab in the sidepanel, refresh UI
+        if (state.currentTabId === tabId) {
+            await restoreTabState(tabId);
+        }
     }
 }
 

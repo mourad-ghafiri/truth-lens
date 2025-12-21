@@ -7,6 +7,8 @@ import { DOM } from '../core/dom.js';
 import * as storage from '../core/storage.js';
 import { displayHistoryResult, getScoreColor } from './result.js';
 
+let historyCallbacks = {};
+
 // Show history list view, hide detail view
 export function showHistoryList() {
     DOM.historyListView?.classList.remove('hidden');
@@ -117,16 +119,21 @@ function createHistoryItem(item) {
     const deleteBtn = div.querySelector('.history-item-delete');
     deleteBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
-        await deleteHistoryItem(item.id);
+        await deleteHistoryItem(item.id, item);
     });
 
     return div;
 }
 
 // Delete history item
-async function deleteHistoryItem(id) {
+async function deleteHistoryItem(id, item) {
     await storage.deleteHistoryItem(id);
     renderHistoryList();
+
+    // Notify main.js to check if UI needs reset
+    if (historyCallbacks.onDelete && item && item.url) {
+        historyCallbacks.onDelete(item.url);
+    }
 }
 
 // Get type icon
@@ -144,7 +151,7 @@ function getTypeLabel(item) {
 }
 
 // Initialize history event listeners
-export function initHistory() {
+export function initHistory(callbacks = {}) {
     // Back button
     DOM.historyBackBtn?.addEventListener('click', showHistoryList);
 
@@ -152,7 +159,13 @@ export function initHistory() {
     DOM.clearHistoryBtn?.addEventListener('click', async () => {
         await storage.clearHistory();
         renderHistoryList();
+
+        // Notify main.js via callback
+        if (callbacks.onClear) callbacks.onClear();
     });
+
+    // Store callbacks
+    historyCallbacks = callbacks;
 
     // Initial render
     renderHistoryList();
