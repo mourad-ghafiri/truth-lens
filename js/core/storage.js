@@ -127,65 +127,84 @@ export async function clearHistory() {
     }
 }
 
-// URL-based Result Persistence
-const URL_CACHE_KEY = 'fc_url_cache';
+// URL-based Result Auto-Restore (from History)
 
-export async function saveUrlResult(url, result) {
-    try {
-        const storage = await chrome.storage.local.get(URL_CACHE_KEY);
-        const urlCache = storage[URL_CACHE_KEY] || {};
-
-        // Normalize URL (remove query params except for v= on YouTube)
-        const normalizedUrl = normalizeUrl(url);
-        console.log('[Truth Lens] Saving URL result. Original:', url, 'Normalized:', normalizedUrl);
-
-        if (!normalizedUrl) return;
-
-        urlCache[normalizedUrl] = {
-            ...result,
-            timestamp: Date.now()
-        };
-
-        await chrome.storage.local.set({ [URL_CACHE_KEY]: urlCache });
-        console.log('[Truth Lens] URL result saved to storage');
-    } catch (e) {
-        console.error('[Truth Lens] URL cache save error:', e);
-    }
-}
-
+/**
+ * Searches the history for a report matching the given URL.
+ * Checks for exact URL match or YouTube video ID match.
+ * @param {string} url - The URL to check
+ * @returns {object|null} The saved result or null
+ */
 export async function getUrlResult(url) {
     try {
-        const storage = await chrome.storage.local.get(URL_CACHE_KEY);
-        const urlCache = storage[URL_CACHE_KEY] || {};
+        const history = await getHistory();
+        const normalizedTarget = normalizeUrl(url);
 
-        const normalizedUrl = normalizeUrl(url);
-        console.log('[Truth Lens] Getting URL result. Normalized:', normalizedUrl);
+        console.log('[Truth Lens] Checking history for URL:', url, 'Normalized:', normalizedTarget);
+        if (!normalizedTarget) return null;
 
-        if (!normalizedUrl) return null;
+        // Find the most recent history item matching this URL
+        // History is already sorted new-to-old
+        const match = history.find(item => {
+            if (!item.url) return false;
 
-        const cached = urlCache[normalizedUrl];
-        // Expire after 24 hours
-        if (cached && (Date.now() - cached.timestamp < 24 * 60 * 60 * 1000)) {
-            console.log('[Truth Lens] Cache Hit');
-            return cached;
+            // Compare normalized URLs
+            const itemUrl = normalizeUrl(item.url);
+            if (itemUrl === normalizedTarget) return true;
+
+            return false;
+        });
+
+        if (match) {
+            console.log('[Truth Lens] History Hit for:', normalizedTarget);
+            // Reconstruct the result object format expected by state
+            return {
+                score: match.score,
+                report: match.report,
+                content: match.content,
+                prompt: match.prompt || '', // Backwards compatibility
+                isYouTube: match.isYouTube,
+                source: match.source,
+                timestamp: match.timestamp
+            };
         }
-        console.log('[Truth Lens] Cache Miss');
+
+        console.log('[Truth Lens] History Miss');
         return null;
     } catch (e) {
-        console.error('[Truth Lens] URL cache get error:', e);
+        console.error('[Truth Lens] auto-restore error:', e);
         return null;
     }
 }
 
+/**
+ * Normalizes a URL for comparison.
+ * - YouTube: Extracts Video ID and standardizes to https://www.youtube.com/watch?v=ID
+ * - Others: Removes query parameters (params often denote session state, not content)
+ */
 function normalizeUrl(url) {
     try {
         const urlObj = new URL(url);
-        // Special handling for YouTube
+
+        // YouTube Handling
         if (urlObj.hostname.includes('youtube.com') || urlObj.hostname.includes('youtu.be')) {
-            const v = urlObj.searchParams.get('v');
-            if (v) return `https://www.youtube.com/watch?v=${v}`;
+            let videoId = null;
+            if (urlObj.searchParams.has('v')) {
+                videoId = urlObj.searchParams.get('v');
+            } else if (urlObj.pathname.startsWith('/embed/')) {
+                videoId = urlObj.pathname.split('/')[2];
+            } else if (urlObj.pathname.startsWith('/v/')) {
+                videoId = urlObj.pathname.split('/')[2];
+            } else if (urlObj.hostname === 'youtu.be') {
+                videoId = urlObj.pathname.slice(1);
+            }
+
+            if (videoId) {
+                return `https://www.youtube.com/watch?v=${videoId}`;
+            }
         }
-        // For others, strip query params and hash
+
+        // General Page Handling - Strip query params and hash for stable comparison
         return `${urlObj.origin}${urlObj.pathname}`;
     } catch (e) {
         return null;
