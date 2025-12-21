@@ -287,61 +287,70 @@
     line-height: 1;
 }
 
-/* Specific Verdict Colors */
+/* Specific Verdict Colors - Higher Contrast */
 .verdict-true {
     background: rgba(34, 197, 94, 0.15);
-    color: #15803d;
-    /* Darker green for text */
+    color: #4ade80;
+    /* Lighter green */
     border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .verdict-mostly-true {
     background: rgba(132, 204, 22, 0.15);
-    color: #4d7c0f;
+    color: #a3e635;
+    /* Lighter lime */
     border: 1px solid rgba(132, 204, 22, 0.3);
 }
 
 .verdict-mixed {
     background: rgba(245, 158, 11, 0.15);
-    color: #b45309;
+    color: #fbbf24;
+    /* Lighter amber */
     border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .verdict-misleading {
     background: rgba(234, 88, 12, 0.15);
-    color: #c2410c;
+    color: #fb923c;
+    /* Lighter orange */
     border: 1px solid rgba(234, 88, 12, 0.3);
 }
 
 .verdict-false {
     background: rgba(239, 68, 68, 0.15);
-    color: #b91c1c;
+    color: #f87171;
+    /* Lighter red */
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .verdict-satire {
     background: rgba(168, 85, 247, 0.15);
-    color: #7e22ce;
+    color: #c084fc;
+    /* Lighter purple */
     border: 1px solid rgba(168, 85, 247, 0.3);
 }
 
 .verdict-unverifiable,
 .verdict-neutral {
     background: rgba(107, 114, 128, 0.15);
-    color: #374151;
+    color: #e2e8f0;
+    /* Lighter gray */
     border: 1px solid rgba(107, 114, 128, 0.3);
 }
 
 .verdict-opinion {
     background: rgba(59, 130, 246, 0.15);
-    color: #1d4ed8;
+    color: #60a5fa;
+    /* Lighter blue */
     border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .claim-text {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.4;
+    font-size: 0.95rem;
+    /* Slightly bigger */
+    color: var(--text-primary);
+    /* Use primary (white) for better readability */
+    line-height: 1.5;
 }
 
 /* Verdict Badges */
