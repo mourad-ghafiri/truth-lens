@@ -144,7 +144,10 @@ async function restoreTabState(tabId) {
         if (!tabState || tabState.status === 'idle') {
             // Check if we have a saved result for this URL
             const tab = await chrome.tabs.get(tabId);
+            console.log('[Truth Lens] checking auto-restore for URL:', tab.url);
+
             const savedResult = await storage.getUrlResult(tab.url);
+            console.log('[Truth Lens] savedResult found:', !!savedResult);
 
             if (savedResult) {
                 console.log('[Truth Lens] Restoring result from URL cache');

@@ -137,6 +137,8 @@ export async function saveUrlResult(url, result) {
 
         // Normalize URL (remove query params except for v= on YouTube)
         const normalizedUrl = normalizeUrl(url);
+        console.log('[Truth Lens] Saving URL result. Original:', url, 'Normalized:', normalizedUrl);
+
         if (!normalizedUrl) return;
 
         urlCache[normalizedUrl] = {
@@ -145,6 +147,7 @@ export async function saveUrlResult(url, result) {
         };
 
         await chrome.storage.local.set({ [URL_CACHE_KEY]: urlCache });
+        console.log('[Truth Lens] URL result saved to storage');
     } catch (e) {
         console.error('[Truth Lens] URL cache save error:', e);
     }
@@ -156,13 +159,17 @@ export async function getUrlResult(url) {
         const urlCache = storage[URL_CACHE_KEY] || {};
 
         const normalizedUrl = normalizeUrl(url);
+        console.log('[Truth Lens] Getting URL result. Normalized:', normalizedUrl);
+
         if (!normalizedUrl) return null;
 
         const cached = urlCache[normalizedUrl];
         // Expire after 24 hours
         if (cached && (Date.now() - cached.timestamp < 24 * 60 * 60 * 1000)) {
+            console.log('[Truth Lens] Cache Hit');
             return cached;
         }
+        console.log('[Truth Lens] Cache Miss');
         return null;
     } catch (e) {
         console.error('[Truth Lens] URL cache get error:', e);
