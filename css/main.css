@@ -1,0 +1,10 @@
+/* Main CSS - Imports all component styles */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@import url('./variables.css');
+@import url('./base.css');
+@import url('./components.css');
+@import url('./tabs.css');
+@import url('./progress.css');
+@import url('./result.css');
+@import url('./history.css');
