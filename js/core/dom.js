@@ -20,6 +20,7 @@ export const DOM = {
     // Progress Elements
     progressContainer: document.getElementById('progress-container'),
     progressTimer: document.getElementById('progress-timer'),
+    cancelCheckBtn: document.getElementById('cancel-check-btn'),
     stepExtract: document.getElementById('step-extract'),
     stepPrompt: document.getElementById('step-prompt'),
     stepAnalyze: document.getElementById('step-analyze'),

@@ -10,9 +10,10 @@
  * Main search function - scrapes DuckDuckGo Lite
  * @param {string} query - Search query
  * @param {number} maxResults - Maximum results to return (default: 5)
+ * @param {AbortSignal} signal - Optional abort signal for cancellation
  * @returns {Promise<object>} Search results object
  */
-export async function search(query, maxResults = 5) {
+export async function search(query, maxResults = 5, signal = null) {
     if (!query || typeof query !== 'string') {
         return {
             success: false,
@@ -27,7 +28,7 @@ export async function search(query, maxResults = 5) {
     console.log('[Web Search] Searching for:', cleanQuery);
 
     try {
-        const results = await scrapeDuckDuckGoLite(cleanQuery, maxResults);
+        const results = await scrapeDuckDuckGoLite(cleanQuery, maxResults, signal);
 
         return {
             success: true,
@@ -53,9 +54,10 @@ export async function search(query, maxResults = 5) {
  * Uses lite.duckduckgo.com which has simpler HTML structure
  * @param {string} query - Search query
  * @param {number} maxResults - Maximum results
+ * @param {AbortSignal} signal - Optional abort signal
  * @returns {Promise<Array>} Array of search results
  */
-async function scrapeDuckDuckGoLite(query, maxResults) {
+async function scrapeDuckDuckGoLite(query, maxResults, signal = null) {
     const encodedQuery = encodeURIComponent(query);
     const url = `https://lite.duckduckgo.com/lite/?q=${encodedQuery}`;
 
@@ -65,9 +67,9 @@ async function scrapeDuckDuckGoLite(query, maxResults) {
         method: 'GET',
         headers: {
             'Accept': 'text/html,application/xhtml+xml',
-            // Use a generic mobile user agent to ensure Lite version is happy
             'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1'
-        }
+        },
+        signal: signal
     });
 
     if (!response.ok) {
@@ -240,13 +242,14 @@ export const webSearchToolDefinition = {
 /**
  * Execute the web search tool (for LLM function calling)
  * @param {object} args - Tool arguments containing query
+ * @param {AbortSignal} signal - Optional abort signal for cancellation
  * @returns {Promise<string>} Formatted search results + browsed content
  */
-export async function executeWebSearchTool(args) {
+export async function executeWebSearchTool(args, signal = null) {
     const { query } = args;
     if (!query) return 'Error: Search query is required';
 
-    const searchResult = await search(query, 5);
+    const searchResult = await search(query, 5, signal);
 
     if (!searchResult.success || searchResult.results.length === 0) {
         return `No results found for: "${query}"`;

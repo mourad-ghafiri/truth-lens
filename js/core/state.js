@@ -13,6 +13,9 @@ export let currentIsYouTube = false;
 export let timerInterval = null;
 export let startTime = null;
 
+// Abort controller for cancelling operations
+export let abortController = null;
+
 // Selection state (for context menu selections)
 export let isViewingSelection = false;
 export let selectionResult = null;
@@ -61,6 +64,19 @@ export function setCurrentTabId(tabId) {
 
 export function setIsRestoringState(restoring) {
     isRestoringState = restoring;
+}
+
+// AbortController management
+export function setAbortController(controller) {
+    abortController = controller;
+}
+
+export function abortCurrentOperation() {
+    if (abortController) {
+        abortController.abort();
+        abortController = null;
+        console.log('[Truth Lens] Operation aborted');
+    }
 }
 
 // Tab state helpers

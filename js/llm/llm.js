@@ -104,9 +104,10 @@ export class LLMService {
      * Analyze text with streaming response
      * @param {string} text - The content to analyze
      * @param {function} onChunk - Callback for each streamed chunk
+     * @param {AbortSignal} signal - Optional abort signal for cancellation
      * @returns {Promise<object>} The parsed result
      */
-    async analyzeTextStream(text, onChunk) {
+    async analyzeTextStream(text, onChunk, signal = null) {
         await this.loadConfig();
 
         let endpoint = this.providerUrl;
@@ -138,7 +139,8 @@ export class LLMService {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${this.apiKey}`
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
+                signal: signal
             });
 
             if (!response.ok) {
@@ -206,7 +208,7 @@ export class LLMService {
                             // Emit search_start event
                             if (onChunk) onChunk('', fullContent, 'search_start', { query: args.query });
 
-                            const result = await executeWebSearchTool(args);
+                            const result = await executeWebSearchTool(args, signal);
 
                             // Parse results for UI display (extract from formatted string)
                             const resultsMatch = result.match(/### \d+\. (.+?)\n\*\*URL:\*\* (.+?)\n/g) || [];
@@ -239,8 +241,12 @@ export class LLMService {
                 // Continue conversation with tool results
                 if (toolResults.length > 0) {
                     try {
-                        return await this.continueWithToolResults(text, toolCalls, toolResults, onChunk);
+                        return await this.continueWithToolResults(text, toolCalls, toolResults, onChunk, signal);
                     } catch (contError) {
+                        // Re-throw AbortError to properly cancel
+                        if (contError.name === 'AbortError') {
+                            throw contError;
+                        }
                         console.error('[Truth Lens] Error continuing with tool results:', contError);
                         // Return fallback based on what we have so far
                         return {
@@ -271,10 +277,11 @@ export class LLMService {
      * @param {Array} toolCalls - Tool calls from the assistant
      * @param {Array} toolResults - Results from tool execution
      * @param {Function} onChunk - Callback for streaming updates
+     * @param {AbortSignal} signal - Optional abort signal for cancellation
      * @param {number} depth - Recursion depth
      * @param {Array} existingMessages - Accumulated message history for recursion
      */
-    async continueWithToolResults(originalText, toolCalls, toolResults, onChunk, depth = 0, existingMessages = null) {
+    async continueWithToolResults(originalText, toolCalls, toolResults, onChunk, signal = null, depth = 0, existingMessages = null) {
         const MAX_TOOL_DEPTH = 100;
         if (depth >= MAX_TOOL_DEPTH) {
             console.warn('[Truth Lens] Max tool call depth reached, returning fallback response');
@@ -336,7 +343,8 @@ export class LLMService {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${this.apiKey}`
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            signal: signal
         });
 
         if (!response.ok) {
@@ -407,7 +415,7 @@ export class LLMService {
                         const args = JSON.parse(toolCall.function.arguments);
                         if (onChunk) onChunk('', fullContent, 'search_start', { query: args.query });
 
-                        const result = await executeWebSearchTool(args);
+                        const result = await executeWebSearchTool(args, signal);
 
                         const resultsMatch = result.match(/### \d+\. (.+?)\n\*\*URL:\*\* (.+?)\n/g) || [];
                         const parsedResults = resultsMatch.map(r => {
@@ -436,7 +444,7 @@ export class LLMService {
 
             if (newToolResults.length > 0) {
                 // Recursively continue with new tool results, passing accumulated messages
-                return await this.continueWithToolResults(originalText, newToolCalls, newToolResults, onChunk, depth + 1, messages);
+                return await this.continueWithToolResults(originalText, newToolCalls, newToolResults, onChunk, signal, depth + 1, messages);
             }
         }
 
@@ -531,9 +539,10 @@ export class LLMService {
      * Generate an educational summary of the content
      * @param {string} content - The original content being fact-checked
      * @param {Array} searchResults - Search results gathered during analysis
+     * @param {AbortSignal} signal - Optional abort signal for cancellation
      * @returns {string} Educational summary
      */
-    async generateSummary(content, searchResults = []) {
+    async generateSummary(content, searchResults = [], signal = null) {
         await this.loadConfig();
 
         const langName = this.getLanguageName(this.reportLanguage);
@@ -588,7 +597,8 @@ Provide the educational summary:`;
                     ],
                     temperature: 0.7,
                     max_tokens: 1000
-                })
+                }),
+                signal: signal
             });
 
             if (!response.ok) {

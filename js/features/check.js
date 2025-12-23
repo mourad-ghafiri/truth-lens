@@ -19,6 +19,31 @@ function buildPrompt(text) {
     return `Please fact-check this content. IMPORTANT: Respond in ${nativeLang}.\n\n${text}`;
 }
 
+// Cancel the current fact-check operation
+export function cancelCheck() {
+    console.log('[Truth Lens] Cancelling fact-check...');
+
+    // Abort any in-flight requests
+    state.abortCurrentOperation();
+
+    // Stop the timer
+    progress.stopTimer();
+
+    // Hide progress, show check button
+    progress.hideProgress(true);
+
+    // Reset tab state to idle
+    if (state.currentTabId) {
+        state.setTabIdle(state.currentTabId);
+    }
+
+    // Clear current content
+    state.setCurrentContent('');
+    state.setCurrentPrompt('');
+
+    console.log('[Truth Lens] Fact-check cancelled');
+}
+
 // Main fact-check with progress
 export async function handleCheckWithProgress(isYouTube, forceRefresh = false) {
     const factCheckTabId = state.currentTabId;
@@ -39,6 +64,10 @@ export async function handleCheckWithProgress(isYouTube, forceRefresh = false) {
         report: { status: 'pending', text: '' },
         summary: { status: 'pending', text: '', content: '' }
     };
+
+    // Create AbortController for this fact-check session
+    const abortController = new AbortController();
+    state.setAbortController(abortController);
 
     // Clear selection state
     state.clearSelectionState();
@@ -281,7 +310,7 @@ export async function handleCheckWithProgress(isYouTube, forceRefresh = false) {
                     substeps.processing.content = fullText;
                 }
             });
-        });
+        }, abortController.signal);
 
         // Mark Step 3 Search as complete (if not already done)
         updateUI(() => {
@@ -354,9 +383,15 @@ export async function handleCheckWithProgress(isYouTube, forceRefresh = false) {
             }
         });
 
+        // Check if aborted before generating summary
+        if (abortController.signal.aborted) {
+            console.log('[Truth Lens] Skipping summary - operation was cancelled');
+            return;
+        }
+
         // Generate educational summary using LLM
         try {
-            const summaryResult = await llmService.generateSummary(content, substeps.search.results || []);
+            const summaryResult = await llmService.generateSummary(content, substeps.search.results || [], abortController.signal);
             substeps.summary.content = summaryResult;
             substeps.summary.status = 'complete';
             substeps.summary.text = 'Done';
@@ -391,6 +426,12 @@ export async function handleCheckWithProgress(isYouTube, forceRefresh = false) {
         } catch (e) { }
 
         const source = isYouTube ? 'YouTube Video' : 'Current Page';
+
+        // Check if aborted before saving/displaying results
+        if (abortController.signal.aborted) {
+            console.log('[Truth Lens] Skipping result display - operation was cancelled');
+            return;
+        }
 
         // Save tab state
         state.setTabResult(factCheckTabId, analysisResult.score, analysisResult, content, prompt, isYouTube);
@@ -429,6 +470,13 @@ export async function handleCheckWithProgress(isYouTube, forceRefresh = false) {
 
     } catch (error) {
         progress.stopTimer();
+
+        // If aborted by user, don't show error
+        if (error.name === 'AbortError') {
+            console.log('[Truth Lens] Fact-check was cancelled by user');
+            return;
+        }
+
         updateUI(() => {
             progress.updateStep('analyze', 'error');
             showError(error.message);

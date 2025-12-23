@@ -9,6 +9,7 @@ export const ja = {
     btnBackToHistory: '戻る',
     btnClearHistory: '履歴を削除',
     btnSaveSettings: '保存',
+    btnCancel: 'キャンセル',
     progressTitle: 'ファクトチェック中',
     stepExtract: '抽出中',
     stepExtractDesc: 'コンテンツを取得中...',

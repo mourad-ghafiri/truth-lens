@@ -9,7 +9,7 @@ import * as storage from '../core/storage.js';
 import { initTabs, switchTab } from './tabs.js';
 import { initHistory } from './history.js';
 import { initSettings, loadSettings, applyTranslations } from './settings.js';
-import { handleCheckWithProgress } from './check.js';
+import { handleCheckWithProgress, cancelCheck } from './check.js';
 import { handleSelectionCheck, closeSelectionResult } from './selection.js';
 import { displayResult, showError } from './result.js';
 import * as progress from './progress.js';
@@ -89,6 +89,9 @@ function setupEventListeners() {
     DOM.closeSelectionBtn?.addEventListener('click', closeSelectionResult);
     const closeTopBtn = document.getElementById('close-selection-top-btn');
     closeTopBtn?.addEventListener('click', closeSelectionResult);
+
+    // Cancel check button
+    DOM.cancelCheckBtn?.addEventListener('click', cancelCheck);
 
     // Preview Toggles
     document.querySelectorAll('.preview-toggle').forEach(btn => {

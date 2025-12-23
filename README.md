@@ -4,6 +4,23 @@ A Chrome extension that combines **AI-powered fact-checking** with **educational
 
 ---
 
+## 📋 Changelog
+
+### v1.1.0 (December 2025)
+- ✨ **Cancel Fact-Check** - New cancel button to abort in-progress analysis
+- ⚡ **Performance Optimizations** - Faster web search with reduced timeouts
+- 🛡️ **Improved Stability** - Proper request cancellation with AbortController
+- 🎨 **UI Improvements** - Wide cancel button below progress steps
+
+### v1.0.0 (December 2025)
+- 🚀 Initial release
+- One-click fact-checking for webpages and YouTube
+- Selection fact-checking via right-click
+- 10 language support with RTL
+- Educational summary generation
+
+---
+
 ## ✨ Features
 
 ### Core Fact-Checking

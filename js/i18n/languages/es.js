@@ -9,6 +9,7 @@ export const es = {
     btnBackToHistory: 'Volver',
     btnClearHistory: 'Borrar Historial',
     btnSaveSettings: 'Guardar Ajustes',
+    btnCancel: 'Cancelar',
     progressTitle: 'Verificación en curso',
     stepExtract: 'Extracción',
     stepExtractDesc: 'Obteniendo contenido...',

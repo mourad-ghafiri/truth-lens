@@ -9,6 +9,7 @@ export const ru = {
     btnBackToHistory: 'Назад',
     btnClearHistory: 'Очистить историю',
     btnSaveSettings: 'Сохранить',
+    btnCancel: 'Отмена',
     progressTitle: 'Идет проверка фактов',
     stepExtract: 'Извлечение',
     stepExtractDesc: 'Получение содержимого страницы...',

@@ -9,6 +9,7 @@ export const de = {
     btnBackToHistory: 'Zurück',
     btnClearHistory: 'Verlauf löschen',
     btnSaveSettings: 'Speichern',
+    btnCancel: 'Abbrechen',
     progressTitle: 'Faktenprüfung läuft',
     stepExtract: 'Extraktion',
     stepExtractDesc: 'Lade Inhalt...',

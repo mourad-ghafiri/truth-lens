@@ -9,6 +9,7 @@ export const zh = {
     btnBackToHistory: '返回历史',
     btnClearHistory: '清除历史',
     btnSaveSettings: '保存设置',
+    btnCancel: '取消',
     progressTitle: '正在进行事实核查',
     stepExtract: '提取内容',
     stepExtractDesc: '正在获取页面内容...',

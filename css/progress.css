@@ -29,6 +29,35 @@
     font-variant-numeric: tabular-nums;
 }
 
+/* Cancel Button (Wide) */
+.cancel-btn-wide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    margin-top: var(--spacing-md);
+    background: transparent;
+    border: 1px solid var(--error-color, #ef4444);
+    border-radius: var(--radius-md);
+    color: var(--error-color, #ef4444);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.cancel-btn-wide:hover {
+    background: var(--error-color, #ef4444);
+    color: white;
+}
+
+.cancel-btn-wide svg {
+    width: 16px;
+    height: 16px;
+}
+
 /* Progress Steps */
 .progress-step {
     display: flex;

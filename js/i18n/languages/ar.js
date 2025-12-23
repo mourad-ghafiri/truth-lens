@@ -9,6 +9,7 @@ export const ar = {
     btnBackToHistory: 'العودة للسجل',
     btnClearHistory: 'مسح السجل',
     btnSaveSettings: 'حفظ الإعدادات',
+    btnCancel: 'إلغاء',
     progressTitle: 'جاري الفحص',
     stepExtract: 'استخراج المحتوى',
     stepExtractDesc: 'جاري إستخراج محتوى الصفحة...',
