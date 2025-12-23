@@ -1,93 +1,196 @@
-# 🔍 Truth Lens - AI Fact Checker
+# 🔍 Truth Lens - AI Fact Checker & Learning Companion
 
-👋 **Welcome to Truth Lens!** Your friendly, AI-powered companion for navigating the web with confidence.
-
-Truth Lens helps you instantly verify articles, blog posts, and even YouTube videos right from your browser. Using advanced AI, we analyze claims, detect bias, and provide a clear, easy-to-read report so you can trust what you read (and watch!).
+A Chrome extension that combines **AI-powered fact-checking** with **educational content generation**. While you read articles or watch YouTube videos, Truth Lens analyzes the content, verifies claims against web sources, and generates an educational summary to help you learn and remember what matters.
 
 ---
 
 ## ✨ Features
 
-- ** Instant Fact-Checking:** Analyze any webpage content with a single click.
-- **📺 YouTube Support:** We can read transcripts! Fact-check video content without watching the whole thing.
-- **🚫 Bias Detection:** Identify political or emotional bias in the text.
-- **📝 Summary & Verdict:** Get a quick "Truth Score" and a summary of key points.
-- **🌍 Multilingual:** Supports multiple languages including English, Arabic, Chinese, and more.
-- **💾 History:** Automatically saves your checks so you can revisit them later.
-- **⚙️ Customizable:** Bring your own AI model via OpenRouter.
+### Core Fact-Checking
+- **One-Click Analysis** - Click the extension icon to analyze the current page
+- **YouTube Support** - Automatically extracts video transcripts (via NoteGPT & yt-to-text APIs)
+- **Selection Fact Check** - Select any text on a page, right-click, and choose "Fact Check with Truth Lens" to verify specific content
+- **Web Search Verification** - AI performs DuckDuckGo searches to cross-reference claims with reliable sources
+- **Live Progress Tracking** - Watch step-by-step progress as the extension extracts content, searches the web, and generates your report
+
+### Report & Analysis
+- **Trust Score (0-100%)** - Visual credibility rating with color-coded indicator
+- **Claim-by-Claim Analysis** - Each claim gets a verdict (Verified, False, Misleading, etc.)
+- **Bias Detection** - Identifies political, emotional, or framing bias
+- **Missing Context** - Highlights important context that may be omitted
+- **Source References** - Links to web sources used for verification
+
+### Educational Content
+- **Key Takeaways** - The most important points extracted from the content
+- **Concepts Explained** - Complex terms and ideas broken down simply
+- **Facts to Remember** - Specific data, statistics, and quotes worth retaining
+- **Context & Background** - Additional context to deepen understanding
+
+### User Experience
+- **Side Panel UI** - Non-intrusive interface that stays alongside your browsing
+- **Check History** - Automatically saves all fact-checks for later review
+- **Tab-Aware State** - Each browser tab maintains its own analysis state
+- **Progress Indicators** - Step-by-step progress with expandable details
+- **Caching** - Previously checked content loads instantly
+
+### Internationalization
+- **10 Languages Supported:**
+  - 🇺🇸 English
+  - 🇸🇦 Arabic (with full RTL support)
+  - 🇫🇷 French
+  - 🇩🇪 German
+  - 🇪🇸 Spanish
+  - 🇮🇹 Italian
+  - 🇵🇹 Portuguese
+  - 🇷🇺 Russian
+  - 🇨🇳 Chinese (Simplified)
+  - 🇯🇵 Japanese
+
+### Customization
+- **Bring Your Own Model** - Use any OpenAI-compatible API
+- **Configurable Provider** - Works with OpenRouter, OpenAI, local LLMs, etc.
+- **Language Selection** - Choose your preferred report language
 
 ---
 
-## 📸 A Quick Tour
+## 📸 Screenshots
 
-### 1. Ready to Check
-Open the side panel to see the clean, simple interface ready for action.
-![Home Page](screnshoots/home_page.jpg)
-
-### 2. Deep Analysis
-Watch as Truth Lens extracts content and analyzes it in real-time.
-![Analysis in Progress](screnshoots/analysis.jpg)
-
-### 3. Clear Reports
-Get a detailed breakdown of claims, with a trust score and referenced sources.
-![Report Summary](screnshoots/report_summary.jpg)
-
-### 4. History Tracking
-Keep track of everything you've verified in one place.
-![History](screnshoots/history.jpg)
-
-### 5. Flexible Settings
-Configure your own API keys and preferered languages.
-![Settings](screnshoots/settings.jpg)
+| Home | Analysis | Report | History | Settings |
+|------|----------|--------|---------|----------|
+| ![Home](screnshoots/home_page.jpg) | ![Analysis](screnshoots/analysis.jpg) | ![Report](screnshoots/report_summary.jpg) | ![History](screnshoots/history.jpg) | ![Settings](screnshoots/settings.jpg) |
 
 ---
 
-## 🚀 How to Install
+## 🚀 Installation
 
-Since this is a developer version, you can install it manually in Chrome (or Edge/Brave):
-
-1.  **Download/Clone** this repository to your computer.
-2.  Open your browser and navigate to the **Extensions** page:
-    *   Chrome: `chrome://extensions`
-    *   Edge: `edge://extensions`
-3.  Enable **Developer mode** (usually a toggle in the top right corner).
-4.  Click **"Load unpacked"**.
-5.  Select the folder where you saved this project (`FactChecker`).
-6.  🎉 That's it! You should see the Truth Lens icon in your toolbar.
+1. **Download** this repository (clone or download ZIP)
+2. Open Chrome and go to `chrome://extensions`
+3. Enable **Developer mode** (toggle in top right)
+4. Click **Load unpacked**
+5. Select the `truth-lens` folder
+6. ✅ Truth Lens icon appears in your toolbar
 
 ---
 
-## 🔑 Setup & Configuration (Free!)
+## ⚙️ Configuration
 
-Truth Lens uses **OpenRouter** to access powerful AI models. We recommend using a high-quality **free** model to get started!
+### Step 1: Get an API Key
 
-### Step 1: Get your API Key
-1.  Go to [OpenRouter.ai](https://openrouter.ai/).
-2.  Sign up or Log in.
-3.  Go to your **Keys** settings and generate a new API Key.
-4.  Copy the key (it starts with `sk-or-...`).
+1. Go to [OpenRouter.ai](https://openrouter.ai/)
+2. Sign up and go to **Keys** settings
+3. Generate a new API Key (starts with `sk-or-...`)
 
 ### Step 2: Configure the Extension
-1.  Open the Truth Lens extension in your side panel.
-2.  Click the **Settings (Gear)** icon in the top/bottom corner.
-3.  Enter the settings:
-    *   **API Key**: Paste your OpenRouter key here.
-    *   **Model**: Enter `nex-agi/deepseek-v3.1-nex-n1:free`
-    *   *(This is a great free model, but you can use any OpenRouter model you like!)*
-4.  Click **Save**.
 
-✅ **You are now ready to fact-check the internet for free!**
-
----
-
-## 🛠️ Tech Stack
-
-Built with ❤️ using:
-*   **Vanilla JavaScript** (No heavy frameworks!)
-*   **Chrome Extensions Manifest V3**
-*   **OpenRouter API** for LLM intelligence
-*   **CSS Variables** for easy theming
+1. Click the Truth Lens icon to open the side panel
+2. Go to **Settings** tab
+3. Enter your configuration:
+   - **Provider URL**: `https://openrouter.ai/api/v1`
+   - **Model**: `nex-agi/deepseek-v3.1-nex-n1:free` (free tier)
+   - **API Key**: Your OpenRouter key
+   - **Language**: Select your preferred language
+4. Click **Save**
 
 ---
 
-*Enjoy browsing deeper with Truth Lens! 🕵️‍♂️*
+## 🔧 How It Works
+
+```
+1. Content Extraction
+   ├── Web Pages: Article text, metadata, structured data
+   └── YouTube: Video title, description, transcript
+
+2. AI Analysis (with web search)
+   ├── Claim identification
+   ├── Live web searches via DuckDuckGo
+   ├── Cross-reference with sources
+   └── Bias & context analysis
+
+3. Report Generation
+   ├── Trust score calculation
+   ├── Per-claim verdicts
+   ├── Source citations
+   └── Educational summary
+```
+
+---
+
+## 🛠️ Technical Stack
+
+| Component | Technology |
+|-----------|------------|
+| Extension | Chrome Manifest V3 |
+| UI | Vanilla JavaScript, CSS Variables |
+| AI Backend | OpenAI-compatible API (OpenRouter) |
+| Web Search | DuckDuckGo Lite scraping |
+| Transcripts | NoteGPT API, yt-to-text.com |
+
+### Key Permissions
+- `sidePanel` - Side panel UI
+- `storage` - Settings & history persistence
+- `contextMenus` - Right-click fact-checking
+- `tabs` - Tab state management
+- `activeTab` - Content extraction
+
+---
+
+## 📁 Project Structure
+
+```
+truth-lens/
+├── manifest.json        # Extension manifest
+├── html/
+│   └── index.html       # Side panel UI
+├── css/
+│   ├── base.css         # Variables, RTL support
+│   ├── progress.css     # Progress indicators
+│   └── result.css       # Report styling
+├── js/
+│   ├── background.js    # Context menu, side panel
+│   ├── content/         # Page & YouTube extraction
+│   ├── core/            # DOM, state, storage
+│   ├── features/        # Check, history, result, settings
+│   ├── i18n/            # Translations (10 languages)
+│   ├── llm/             # AI service, prompts
+│   └── tools/           # Web search (DuckDuckGo)
+└── icons/               # Extension icons
+```
+
+---
+
+## 🌐 Supported Content Types
+
+| Type | Method |
+|------|--------|
+| News Articles | Article content extraction |
+| Blog Posts | Main content detection |
+| YouTube Videos | Transcript API extraction |
+| Generic Pages | Body text with cleaning |
+| Selected Text | Right-click context menu |
+
+---
+
+## ⚡ Verdict Types
+
+| Verdict | Meaning |
+|---------|---------|
+| ✅ VERIFIED | Claim confirmed by reliable sources |
+| ✅ TRUE | Factually accurate |
+| ⚠️ MOSTLY TRUE | True with minor inaccuracies |
+| ⚠️ MIXED | Contains both true and false elements |
+| ⚠️ MISLEADING | Technically true but framed deceptively |
+| ❌ FALSE | Factually incorrect |
+| ❌ FABRICATED | Entirely made up |
+| 🎭 SATIRE | Intentional parody/humor |
+| ❓ UNVERIFIABLE | Cannot be confirmed or denied |
+| 💭 OPINION | Subjective statement, not a claim |
+
+---
+
+## 📄 License
+
+MIT License - Feel free to use, modify, and distribute.
+
+---
+
+Built with ❤️ using Vanilla JS and AI

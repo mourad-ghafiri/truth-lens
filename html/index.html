@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truth Lens</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <img src="../icons/icon48.png" alt="Truth Lens">
+                <h1 data-i18n="appTitle">Truth Lens</h1>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="check">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span data-i18n="tabCheck">Check</span>
+            </button>
+            <button class="tab-btn" data-tab="history">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v6h6"></path>
+                    <path d="M22 22H2V2h10l10 10z"></path>
+                </svg>
+                <span data-i18n="tabHistory">History</span>
+            </button>
+            <button class="tab-btn" data-tab="settings">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                    </path>
+                </svg>
+                <span data-i18n="tabSettings">Settings</span>
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Check Tab -->
+            <section id="check" class="tab-content active">
+                <!-- Check Button -->
+                <button id="check-page-btn" class="primary-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <polyline points="9 12 11 14 15 10"></polyline>
+                    </svg>
+                    <span data-i18n="btnCheckPage">Fact Check</span>
+                </button>
+
+                <!-- Progress Container -->
+                <div id="progress-container" class="progress-container hidden">
+                    <div class="progress-header">
+                        <span class="progress-title" data-i18n="progressTitle">Fact-Checking...</span>
+                        <span id="progress-timer" class="progress-timer">0.0s</span>
+                    </div>
+
+                    <div id="step-extract" class="progress-step">
+                        <div class="step-icon">1</div>
+                        <div class="step-content">
+                            <div class="step-title" data-i18n="stepExtract">Extracting Content</div>
+
+                            <!-- Step 1 Sub-Steps -->
+                            <div id="extract-substeps" class="substeps-container hidden">
+                                <div class="substep" id="substep-detect">
+                                    <div class="substep-header">
+                                        <span class="substep-icon">🔎</span>
+                                        <span class="substep-title" data-i18n="substepDetect">Detecting Page Type</span>
+                                        <span class="substep-status" id="detect-status"></span>
+                                    </div>
+                                </div>
+                                <div class="substep" id="substep-extract">
+                                    <div class="substep-header">
+                                        <span class="substep-icon">📄</span>
+                                        <span class="substep-title" data-i18n="substepExtract">Extracting Text</span>
+                                        <span class="substep-status" id="extract-status"></span>
+                                        <button class="substep-toggle" aria-expanded="false">▼</button>
+                                    </div>
+                                    <div class="substep-content hidden">
+                                        <div id="content-preview-text" class="stream-content"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="step-prompt" class="progress-step">
+                        <div class="step-icon">2</div>
+                        <div class="step-content">
+                            <div class="step-title" data-i18n="stepPrompt">Preparing Analysis</div>
+
+                            <!-- Step 2 Sub-Steps -->
+                            <div id="prompt-substeps" class="substeps-container hidden">
+                                <div class="substep" id="substep-prompt">
+                                    <div class="substep-header">
+                                        <span class="substep-icon">✍️</span>
+                                        <span class="substep-title" data-i18n="substepPrompt">Building Prompt</span>
+                                        <span class="substep-status" id="prompt-status"></span>
+                                        <button class="substep-toggle" aria-expanded="false">▼</button>
+                                    </div>
+                                    <div class="substep-content hidden">
+                                        <div id="prompt-preview-text" class="stream-content"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="step-analyze" class="progress-step">
+                        <div class="step-icon">3</div>
+                        <div class="step-content">
+                            <div class="step-title" data-i18n="stepAnalyze">Analysis</div>
+
+                            <!-- Step 3 Sub-Steps (Web Search only) -->
+                            <div id="analysis-substeps" class="substeps-container hidden">
+                                <!-- Web Search Sub-Step -->
+                                <div class="substep" id="substep-search">
+                                    <div class="substep-header">
+                                        <span class="substep-icon">🔍</span>
+                                        <span class="substep-title" data-i18n="substepSearch">Web Search</span>
+                                        <span class="substep-status" id="search-status"></span>
+                                        <button class="substep-toggle" aria-expanded="false">▼</button>
+                                    </div>
+                                    <div class="substep-content hidden">
+                                        <div id="search-queries" class="search-queries-list"></div>
+                                        <div id="search-results" class="search-results-list"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="step-complete" class="progress-step">
+                        <div class="step-icon">4</div>
+                        <div class="step-content">
+                            <div class="step-title" data-i18n="stepComplete">Report</div>
+
+                            <!-- Step 4 Sub-Steps (Processing, Report, Summary) -->
+                            <div id="complete-substeps" class="substeps-container hidden">
+                                <!-- Processing Sub-Step (LLM Thinking) -->
+                                <div class="substep" id="substep-processing">
+                                    <div class="substep-header">
+                                        <span class="substep-icon">💭</span>
+                                        <span class="substep-title" data-i18n="substepProcessing">Processing</span>
+                                        <span class="substep-status" id="processing-status"></span>
+                                        <button class="substep-toggle" aria-expanded="false">▼</button>
+                                    </div>
+                                    <div class="substep-content hidden">
+                                        <div id="processing-stream" class="stream-content"></div>
+                                    </div>
+                                </div>
+                                <!-- Report Generation Sub-Step -->
+                                <div class="substep" id="substep-report">
+                                    <div class="substep-header">
+                                        <span class="substep-icon">📝</span>
+                                        <span class="substep-title" data-i18n="substepReport">Report Generation</span>
+                                        <span class="substep-status" id="report-status"></span>
+                                        <button class="substep-toggle" aria-expanded="false">▼</button>
+                                    </div>
+                                    <div class="substep-content hidden">
+                                        <div id="report-preview" class="stream-content"></div>
+                                    </div>
+                                </div>
+                                <!-- Summary Sub-Step -->
+                                <div class="substep" id="substep-summary">
+                                    <div class="substep-header">
+                                        <span class="substep-icon">📚</span>
+                                        <span class="substep-title" data-i18n="substepSummary">Educational
+                                            Summary</span>
+                                        <span class="substep-status" id="summary-status"></span>
+                                        <button class="substep-toggle" aria-expanded="false">▼</button>
+                                    </div>
+                                    <div class="substep-content hidden">
+                                        <div id="summary-preview" class="stream-content"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Container -->
+                <div id="result-container" class="result-container hidden">
+                    <!-- Close Button Row -->
+                    <div id="close-button-row" class="close-button-row hidden">
+                        <button id="close-selection-top-btn" class="close-btn-top" title="Close">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Report Info Header -->
+                    <div id="report-info" class="report-info hidden">
+                        <div class="report-info-title" id="report-info-title">Title</div>
+                        <div class="report-info-meta">
+                            <span class="report-info-type" id="report-info-type">📄 Page</span>
+                            <span class="report-info-date" id="report-info-date">Date</span>
+                        </div>
+                        <div class="report-info-url" id="report-info-url">URL</div>
+                    </div>
+
+                    <!-- Cached Notice -->
+                    <div id="cached-notice" class="cached-notice hidden">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                        </svg>
+                        <span data-i18n="cachedResult">Cached result</span>
+                        <button id="refresh-check-btn" class="secondary-btn" data-i18n="btnRefresh">Refresh</button>
+                    </div>
+
+                    <!-- Score Card -->
+                    <div class="score-card">
+                        <div class="score-circle-container">
+                            <svg class="score-circle" viewBox="0 0 36 36">
+                                <path class="circle-bg"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path class="circle" stroke-dasharray="0, 100"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            </svg>
+                            <span id="score-text" class="score-text">--%</span>
+                        </div>
+                        <h2 id="verdict-title" class="verdict-title">Analysis Result</h2>
+                        <p id="verdict-subtitle" class="verdict-subtitle"></p>
+                    </div>
+
+                    <!-- Report Sections -->
+                    <div id="report-sections" class="report-sections"></div>
+
+                    <!-- Actions -->
+                    <div class="result-actions">
+                        <button id="new-check-btn" class="primary-btn" data-i18n="btnRecheck">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 4v6h-6"></path>
+                                <path d="M1 20v-6h6"></path>
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                            </svg>
+                            Recheck
+                        </button>
+                        <button id="close-selection-btn" class="secondary-btn hidden"
+                            data-i18n="btnClose">Close</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Tab -->
+            <section id="history" class="tab-content">
+                <!-- List View -->
+                <div id="history-list-view">
+                    <div class="history-actions">
+                        <button id="clear-history-btn" class="secondary-btn" data-i18n="btnClearHistory">Clear
+                            History</button>
+                    </div>
+                    <div id="history-list" class="history-list">
+                        <p class="placeholder-text" data-i18n="historyEmpty">No checks yet.</p>
+                    </div>
+                </div>
+
+                <!-- Detail View -->
+                <div id="history-detail-view" class="hidden">
+                    <button id="history-back-btn" class="history-back-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <span data-i18n="btnBackToHistory">Back to History</span>
+                    </button>
+
+                    <div class="report-info">
+                        <div class="report-info-title" id="history-detail-title">Title</div>
+                        <div class="report-info-meta">
+                            <span class="report-info-type" id="history-detail-type">📄 Page</span>
+                            <span class="report-info-date" id="history-detail-date">Date</span>
+                        </div>
+                        <div class="report-info-url" id="history-detail-url">URL</div>
+                    </div>
+
+                    <div class="score-card">
+                        <div class="score-circle-container">
+                            <svg class="score-circle" viewBox="0 0 36 36">
+                                <path class="circle-bg"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path id="history-detail-circle" class="circle" stroke-dasharray="0, 100"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            </svg>
+                            <span id="history-detail-score" class="score-text">--%</span>
+                        </div>
+                        <h2 id="history-detail-verdict" class="verdict-title">Analysis Result</h2>
+                    </div>
+
+                    <div id="history-detail-sections" class="report-sections"></div>
+                </div>
+            </section>
+
+            <!-- Settings Tab -->
+            <section id="settings" class="tab-content">
+                <form id="settings-form">
+                    <div class="form-group">
+                        <label for="provider-url" data-i18n="lblProviderUrl">LLM Provider URL</label>
+                        <input type="url" id="provider-url" placeholder="https://openrouter.ai/api/v1"
+                            value="https://openrouter.ai/api/v1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="report-language" data-i18n="lblLanguage">Report Language</label>
+                        <select id="report-language">
+                            <option value="en">English (English)</option>
+                            <option value="ar">العربية (Arabic)</option>
+                            <option value="zh">简体中文 (Chinese)</option>
+                            <option value="ru">Русский (Russian)</option>
+                            <option value="fr">Français (French)</option>
+                            <option value="it">Italiano (Italian)</option>
+                            <option value="es">Español (Spanish)</option>
+                            <option value="de">Deutsch (German)</option>
+                            <option value="pt">Português (Portuguese)</option>
+                            <option value="ja">日本語 (Japanese)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="model-name" data-i18n="lblModelName">Model Name</label>
+                        <input type="text" id="model-name" placeholder="nex-agi/deepseek-v3.1-nex-n1:free"
+                            value="nex-agi/deepseek-v3.1-nex-n1:free">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="api-key" data-i18n="lblApiKey">API Key</label>
+                        <input type="password" id="api-key" placeholder="sk-...">
+                    </div>
+
+                    <button type="submit" class="save-btn" data-i18n="btnSaveSettings">Save Settings</button>
+                    <p id="settings-status" class="status-text"></p>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script src="../js/features/main.js" type="module"></script>
+</body>
+
+</html>

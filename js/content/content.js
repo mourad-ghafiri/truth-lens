@@ -1,3 +1,7 @@
+/**
+ * Main Content Script Interface
+ * Orchestrates content extraction for both pages and video transcripts
+ */
 
 // Listen for messages from the side panel or background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -227,8 +231,7 @@ function isYouTubePage() {
  * Extracts YouTube video content: title, channel, description, and transcript.
  */
 async function extractYouTubeContent() {
-    console.log('[Truth Lens] Extracting YouTube content...');
-    let result = '[YouTube Video Analysis]\n\n';
+    let result = '';
 
     // Get video title
     const titleElement = document.querySelector('h1.ytd-video-primary-info-renderer yt-formatted-string') ||
@@ -263,23 +266,17 @@ async function extractYouTubeContent() {
     }
 
     // Try to get transcript (async) via API
-    console.log('[Truth Lens] Fetching transcript from API...');
-    result += '\n--- Transcript ---\n\n';
     try {
         const transcript = await extractYouTubeTranscript();
         if (transcript) {
-            console.log('[Truth Lens] Transcript fetched successfully, length:', transcript.length);
             result += transcript;
         } else {
-            console.log('[Truth Lens] No transcript returned from API');
             result += '[Transcript not available - the video may not have captions enabled]\n';
         }
     } catch (e) {
         console.error('[Truth Lens] Error extracting transcript:', e);
         result += '[Error extracting transcript]\n';
     }
-
-    console.log('[Truth Lens] YouTube content extraction complete, total length:', result.length);
     return result;
 }
 
@@ -466,4 +463,3 @@ function getYouTubeVideoId() {
     }
     return null;
 }
-

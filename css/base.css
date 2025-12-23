@@ -1,0 +1,225 @@
+/* Base Styles - Reset and Utilities */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    width: 100%;
+    height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* RTL Support - Applied when body has .rtl class */
+
+/* Base RTL text alignment */
+body.rtl {
+    text-align: right;
+}
+
+/* Flex containers - reverse direction in RTL (UI elements only, not report content) */
+body.rtl .header,
+body.rtl .tab-nav,
+body.rtl .step-header,
+body.rtl .substep-header,
+body.rtl .history-item,
+body.rtl .report-info-meta {
+    flex-direction: row-reverse;
+}
+
+/* Text alignment for RTL (UI elements only, not score card) */
+body.rtl .progress-title,
+body.rtl .step-info,
+body.rtl .substep-title,
+body.rtl .history-item-title,
+body.rtl .history-item-meta,
+body.rtl .placeholder-text,
+body.rtl label,
+body.rtl input,
+body.rtl select,
+body.rtl textarea {
+    text-align: right;
+}
+
+/* Swap margins and paddings */
+body.rtl .step-indicator {
+    margin-left: var(--spacing-md);
+    margin-right: 0;
+}
+
+body.rtl .step-icon {
+    margin-left: var(--spacing-sm);
+    margin-right: 0;
+}
+
+body.rtl .substep-icon {
+    margin-left: var(--spacing-xs);
+    margin-right: 0;
+}
+
+body.rtl .report-section-icon {
+    margin-left: var(--spacing-xs);
+    margin-right: 0;
+}
+
+/* Collapse toggle position */
+body.rtl .collapse-toggle {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* Status badges alignment */
+body.rtl .substep-status,
+body.rtl .step-status {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* History items */
+body.rtl .history-item-left {
+    margin-right: 0;
+    margin-left: var(--spacing-sm);
+}
+
+body.rtl .history-item-delete {
+    margin-left: 0;
+    margin-right: var(--spacing-sm);
+}
+
+/* Settings form */
+body.rtl .settings-form label {
+    display: block;
+    text-align: right;
+}
+
+body.rtl .settings-form input,
+body.rtl .settings-form select {
+    text-align: right;
+}
+
+/* Button icons (if any text + icon) */
+body.rtl .btn-icon {
+    margin-left: 0;
+    margin-right: var(--spacing-xs);
+}
+
+/* Legacy RTL classes for content-specific direction */
+.rtl-text {
+    direction: rtl;
+    text-align: right;
+}
+
+.rtl-claims {
+    direction: rtl;
+    display: flex;
+    flex-direction: row;
+    direction: rtl;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Elegant Glow Animation for Active Step */
+@keyframes elegantGlow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow: 0 0 20px 4px rgba(16, 185, 129, 0.3);
+        transform: scale(1.05);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+        transform: scale(1);
+    }
+}
+
+/* Status Messages */
+.status-message {
+    margin-top: 10px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    padding: 10px;
+    background: var(--surface-color);
+    border-radius: var(--radius-sm);
+}
+
+.placeholder-text {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: var(--spacing-lg);
+}

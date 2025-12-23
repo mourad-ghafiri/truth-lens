@@ -2,19 +2,37 @@
   "manifest_version": 3,
   "name": "Truth Lens - AI Fact Checker",
   "version": "1.0",
-  "description": "Analyze and fact-check web content with AI-powered insights.",
+  "description": "Verify facts on any webpage or YouTube video using AI.",
   "permissions": [
     "sidePanel",
-    "activeTab",
-    "scripting",
+    "storage",
     "contextMenus",
-    "storage"
+    "tabs",
+    "scripting",
+    "activeTab"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "*://*/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "js/background.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "html/index.html"
+  },
+  "action": {
+    "default_title": "Open Truth Lens",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "content_scripts": [
     {
@@ -22,20 +40,8 @@
         "<all_urls>"
       ],
       "js": [
-        "content.js"
-      ],
-      "run_at": "document_idle"
+        "js/content/content.js"
+      ]
     }
-  ],
-  "action": {
-    "default_title": "Open Fact Checker"
-  },
-  "side_panel": {
-    "default_path": "sidepanel.html"
-  },
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  }
+  ]
 }
